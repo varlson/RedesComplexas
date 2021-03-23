@@ -1,0 +1,90 @@
+from networkGenerator import *
+#-------------------------- VULNERABILITY LIST GENERATOR ------------------------
+def effGlobal(g): # global efficiency calculator
+
+	eff= 0.0
+	temp = []
+	N = float(g.vcount())
+	for l in g.shortest_paths_dijkstra():
+		for ll in l:
+			if(ll != 0):
+				eff+= (1.0/ll)
+	E = eff/(N*(N-1.0))
+	return E
+
+def calculator(g): # vulnerability calculator
+
+	allEff = []
+	eGlobal = effGlobal(g)
+
+	for k in range(g.vcount()):
+		g_copy = g.copy()
+		list_of_ids = []
+
+		for vertex_id in range(g_copy.vcount()):
+			try:
+				list_of_ids.append(g_copy.get_eid(k, vertex_id))
+			except:
+				pass
+		g_copy.delete_edges(list_of_ids)
+		aux = (eGlobal - effGlobal(g_copy))/eGlobal
+		allEff.append(aux)
+
+	_max = max(allEff)
+	node_size = np.array(allEff)
+	_min = min(allEff)
+
+	node_size = 7+ ((node_size - _min) * (45 - 7))/(_max - _min)
+	g.vs['size'] = node_size
+	index = allEff.index(_max)
+	return allEff
+
+#----------------- REMOVAL LIST  GENERATOR BY METRICS -----------------------------
+
+def removalFunction(g, metric):
+    N = g.vcount()
+    removaList = np.zeros(N)
+    removaList[0] = 1.0
+    count=1
+    while g.vcount() > 1:
+        _max = max(metric)
+        index = metric.index(_max)
+        g.delete_vertices(index)
+        del metric[index]
+        clusters = g.components()
+        removaList[count] =  max(clusters.sizes())/N
+        count+=1
+    return removaList
+
+#---------- RANDOM REMOVAL LIST GENERATOR-----------------------
+
+
+def listRemovalgenerator(g, simulation):
+
+    N = g.vcount()
+    removaList = np.zeros(N)
+
+    for i in range(simulation):
+        gcopy = g.copy()
+        removaList[0] += 1.0
+        count=1
+        while gcopy.vcount() > 1:
+            index = rand() * gcopy.vcount()
+            index = int(index)
+            gcopy.delete_vertices(index)
+            clusters = gcopy.components()
+            if len(clusters) > 0:
+                removaList[count] += max(clusters.sizes())/float(N)
+                # print(clusters.sizes())
+            else:
+                removaList[count] += 0.0
+            count = count+1 
+    removaList = removaList/simulation
+    return removaList
+
+def removal_methods_main(g):
+
+    degree_removal_list = g.degree()
+    random_removal_list = listRemovalgenerator(g.copy(), 100)
+    vulnerability_list = calculator(g.copy())
+    # betweenness = g.betweenness()
