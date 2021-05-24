@@ -10,7 +10,7 @@ def effGlobal(g, weighted=False): # global efficiency calculator
     if weighted:
         _weight = np.array(g.es['weight'])
         _weight = np.array([1.0/x if x != 0.0 else 0 for x in _weight])
-        for l in g.shortest_paths_dijkstra(weights = peso):
+        for l in g.shortest_paths_dijkstra(weights = _weight):
             for ll in l:
                 if(ll != 0):
                     eff+= (1.0/ll)
@@ -114,16 +114,16 @@ def removal_methods_main(g):
     metricNameList.append("Betweenness")
 
         # BETWEENNESS WITH WEIGHT
-    # _weight = np.array(g.es['weight'])
-    # _weight = np.array([1.0/x if x != 0.0 else 0 for x in _weight])
-    # betweenness_removal_list = removalFunction(g.copy(),g.betweenness(weights = _weight))
-    # metricList.append(betweenness_removal_list)
-    # metricNameList.append("Betweenness with Weights")
+    _weight = np.array(g.es['weight'])
+    _weight = np.array([1.0/x if x != 0.0 else 0 for x in _weight])
+    betweenness_removal_list = removalFunction(g.copy(),g.betweenness(weights = _weight))
+    metricList.append(betweenness_removal_list)
+    metricNameList.append("Betweenness with Weights")
 
     # STRENGTH WEIGHT
-    # strength_removal_list = removalFunction(g.copy(),g.strength(weights = g.es['weight']))
-    # metricList.append(strength_removal_list)
-    # metricNameList.append("Strength")
+    strength_removal_list = removalFunction(g.copy(),g.strength(weights = g.es['weight']))
+    metricList.append(strength_removal_list)
+    metricNameList.append("Strength")
 
      # VULNERABILITY
     vulnerability_removal_list = removalFunction(g.copy(),calculator(g.copy()))
@@ -131,9 +131,9 @@ def removal_methods_main(g):
     metricNameList.append("Vulnerability")
     
     # VULNERABILITY WITH WEIGHTS
-    # vulnerability_removal_list = removalFunction(g.copy(),calculator(g.copy(), True))
-    # metricList.append(vulnerability_removal_list)
-    # metricNameList.append("Vulnerability with Weights")
+    vulnerability_removal_list = removalFunction(g.copy(),calculator(g.copy(), True))
+    metricList.append(vulnerability_removal_list)
+    metricNameList.append("Vulnerability with Weights")
     
     # RANDOM REMOVAL
     random_removal_list = randomRemovalgenerator(g.copy(), 100)

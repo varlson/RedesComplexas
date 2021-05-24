@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
 from removalMethods import *
-from totalFlow import removalMethods_totalFlow
-from efficiency import removalMethods_effeciency
+# from totalFlow import removalMethods_totalFlow
+# from efficiency import removalMethods_effeciency
+
+from metricExtractor import aindaPensar
 #----------------------------- GRAPH BUILDER PASSING GRAPH, METRIC(S) AND LABEL(S)---------
 def graphBuilder(g, removalTypes, metrics, network, folder, option=1):
     nodes = [x/float(g.vcount()) for x in range(1, g.vcount()+1)]
@@ -31,23 +33,17 @@ def graphBuilder(g, removalTypes, metrics, network, folder, option=1):
     plt.clf()
 
 
-# networks = ['pas2010', 'pas2005', 'pas2000', 'pas1995', 'pas1990', 'pas1985', 'pas1980', 'pas1975', 'pas1972']
-# for net in networks:
-#     g = main(net)
-#     lsts = removal_methods_main(g)
-#     graphBuilder(g, lsts[1], lsts[0], net, 'GiantComponents')
-    
-#     lsts = removalMethods_totalFlow(g)
-#     graphBuilder(g, lsts[1], lsts[0], net, 'TotalFlow', 2)
-
-#     lsts = removalMethods_effeciency(g)
-#     graphBuilder(g, lsts[1], lsts[0], net, 'Efficiency', 3)
-    
-
-def temp(g, name):
-    lsts = removal_methods_main(g)
-    graphBuilder(g, lsts[1], lsts[0], name+' Giant Component', 'Other')
+networks = ['pas2010', 'pas2005', 'pas2000', 'pas1995', 'pas1990', 'pas1985', 'pas1980', 'pas1975', 'pas1972']
+for net in networks[:2]:
+    g = main(net)
     # lsts = removalMethods_totalFlow(g)
-    # graphBuilder(g, lsts[1], lsts[0], name+' Total Flow', 'Other', 2)
-    # lsts = removalMethods_effeciency(g)
-    # graphBuilder(g, lsts[1], lsts[0], name+' Efficiency', 'Other', 3)
+    # graphBuilder(g, lsts[1], lsts[0], net, 'GianComponents', 2)
+    lsts = aindaPensar(g)
+    graphBuilder(g, lsts[1], lsts[0], net, 'GiantComponents')
+    
+    lsts = aindaPensar(g, 2)
+    graphBuilder(g, lsts[1], lsts[0], net, 'TotalFlow', 2)
+
+    lsts = aindaPensar(g,3)
+    graphBuilder(g, lsts[1], lsts[0], net, 'Efficiency', 3)
+    
