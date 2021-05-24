@@ -1,44 +1,57 @@
 from networkGenerator import *
+from random import random as rand
+
 #-------------------------- VULNERABILITY LIST GENERATOR ------------------------
-def effGlobal(g): # global efficiency calculator
+def effGlobal(g, weighted=False): # global efficiency calculator
 
-	eff= 0.0
-	temp = []
-	N = float(g.vcount())
-	for l in g.shortest_paths_dijkstra():
-		for ll in l:
-			if(ll != 0):
-				eff+= (1.0/ll)
-	E = eff/(N*(N-1.0))
-	return E
+    eff= 0.0
+    temp = []
+    N = float(g.vcount())
+    if weighted:
+        _weight = np.array(g.es['weight'])
+        _weight = np.array([1.0/x if x != 0.0 else 0 for x in _weight])
+        for l in g.shortest_paths_dijkstra(weights = peso):
+            for ll in l:
+                if(ll != 0):
+                    eff+= (1.0/ll)
+    else:
+        for l in g.shortest_paths_dijkstra():
+            for ll in l:
+                if(ll != 0):
+                    eff+= (1.0/ll)
+    E = 0
+    try:
+        E = eff/(N*(N-1.0))
+    except:
+        pass
+    return E
 
-def calculator(g): # vulnerability calculator
+def calculator(g, weighted = False): # vulnerability calculator
+    allEff = []
+    eGlobal = effGlobal(g, weighted)
+    for k in range(g.vcount()):
+        g_copy = g.copy()
+        list_of_ids = []
 
-	allEff = []
-	eGlobal = effGlobal(g)
+        for vertex_id in range(g_copy.vcount()):
+            try:
+                list_of_ids.append(g_copy.get_eid(k, vertex_id))
+            except:
+                pass
+        g_copy.delete_edges(list_of_ids)
+        aux = (eGlobal - effGlobal(g_copy,weighted))/eGlobal
+        allEff.append(aux)
 
-	for k in range(g.vcount()):
-		g_copy = g.copy()
-		list_of_ids = []
+    _max = max(allEff)
+    node_size = np.array(allEff)
+    _min = min(allEff)
 
-		for vertex_id in range(g_copy.vcount()):
-			try:
-				list_of_ids.append(g_copy.get_eid(k, vertex_id))
-			except:
-				pass
-		g_copy.delete_edges(list_of_ids)
-		aux = (eGlobal - effGlobal(g_copy))/eGlobal
-		allEff.append(aux)
+    node_size = 7+ ((node_size - _min) * (45 - 7))/(_max - _min)
+    g.vs['size'] = node_size
+    index = allEff.index(_max)
+    return allEff
 
-	_max = max(allEff)
-	node_size = np.array(allEff)
-	_min = min(allEff)
-
-	node_size = 7+ ((node_size - _min) * (45 - 7))/(_max - _min)
-	g.vs['size'] = node_size
-	index = allEff.index(_max)
-	return allEff
-
+#----------------- COMPONENTE GINGANTE -----------------------------
 #----------------- REMOVAL LIST  GENERATOR BY METRICS -----------------------------
 
 def removalFunction(g, metric):
@@ -56,10 +69,11 @@ def removalFunction(g, metric):
         count+=1
     return removaList
 
+
 #---------- RANDOM REMOVAL LIST GENERATOR-----------------------
 
 
-def listRemovalgenerator(g, simulation):
+def randomRemovalgenerator(g, simulation):
 
     N = g.vcount()
     removaList = np.zeros(N)
@@ -82,9 +96,47 @@ def listRemovalgenerator(g, simulation):
     removaList = removaList/simulation
     return removaList
 
-def removal_methods_main(g):
 
-    degree_removal_list = g.degree()
-    random_removal_list = listRemovalgenerator(g.copy(), 100)
-    vulnerability_list = calculator(g.copy())
-    # betweenness = g.betweenness()
+def removal_methods_main(g):
+    metricList = []
+    N =g.vcount()
+    metricNameList = []
+    # remList = []
+
+     # DEGREE
+    degree_removal_list = removalFunction(g.copy(),g.degree())
+    metricList.append(degree_removal_list)
+    metricNameList.append("Degree")
+
+     # BETWEENNESS WITHOUT WEIGHT
+    betweenness_removal_list = removalFunction(g.copy(),g.betweenness())
+    metricList.append(betweenness_removal_list)
+    metricNameList.append("Betweenness")
+
+        # BETWEENNESS WITH WEIGHT
+    # _weight = np.array(g.es['weight'])
+    # _weight = np.array([1.0/x if x != 0.0 else 0 for x in _weight])
+    # betweenness_removal_list = removalFunction(g.copy(),g.betweenness(weights = _weight))
+    # metricList.append(betweenness_removal_list)
+    # metricNameList.append("Betweenness with Weights")
+
+    # STRENGTH WEIGHT
+    # strength_removal_list = removalFunction(g.copy(),g.strength(weights = g.es['weight']))
+    # metricList.append(strength_removal_list)
+    # metricNameList.append("Strength")
+
+     # VULNERABILITY
+    vulnerability_removal_list = removalFunction(g.copy(),calculator(g.copy()))
+    metricList.append(vulnerability_removal_list)
+    metricNameList.append("Vulnerability")
+    
+    # VULNERABILITY WITH WEIGHTS
+    # vulnerability_removal_list = removalFunction(g.copy(),calculator(g.copy(), True))
+    # metricList.append(vulnerability_removal_list)
+    # metricNameList.append("Vulnerability with Weights")
+    
+    # RANDOM REMOVAL
+    random_removal_list = randomRemovalgenerator(g.copy(), 100)
+    metricList.append(random_removal_list)
+    metricNameList.append("Random")
+    return [metricList, metricNameList]

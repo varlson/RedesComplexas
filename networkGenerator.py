@@ -32,16 +32,21 @@ class National:
         randomGraph2L.vs['id'] = g.vs['id']
         self.mine = g
         self.coord_setter(g, coord)
-        self.plot(g, 'GeneratedGraphs/'+name+'.png')
+        self.plot(g, 'GeneratedNetworks/'+name+'.png')
 
         self.coord_setter(randomGraph2L, coord)
-        self.plot(randomGraph2L, 'GeneratedGraphs/'+name+'RandomGraph2L.png')
+        self.plot(randomGraph2L, 'GeneratedNetworks/'+name+'RandomGraph2L.png')
 
 
     def coord_setter(self, g, coord):
         lst = coord.transpose()
         for i in range(g.vcount()):
-            idx = list(lst[0]).index(g.vs[i]['id'])
+            try:
+                idx = list(lst[0]).index(g.vs[i]['id'])
+            except:
+                print(g.vs[i]['id'])
+                pass
+            # idx = list(lst[0]).index(g.vs[i]['id'])
             g.vs[i]['x'] = lst[1][idx]
             g.vs[i]['y'] = lst[2][idx] *(-1)
 
