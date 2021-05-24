@@ -34,16 +34,17 @@ def graphBuilder(g, removalTypes, metrics, network, folder, option=1):
 
 
 networks = ['pas2010', 'pas2005', 'pas2000', 'pas1995', 'pas1990', 'pas1985', 'pas1980', 'pas1975', 'pas1972']
-for net in networks[:2]:
-    g = main(net)
-    # lsts = removalMethods_totalFlow(g)
-    # graphBuilder(g, lsts[1], lsts[0], net, 'GianComponents', 2)
-    lsts = aindaPensar(g)
-    graphBuilder(g, lsts[1], lsts[0], net, 'GiantComponents')
-    
-    lsts = aindaPensar(g, 2)
-    graphBuilder(g, lsts[1], lsts[0], net, 'TotalFlow', 2)
+def _main():
+    for net in networks[:2]:
+        g = main(net)
+        # lsts = removalMethods_totalFlow(g)
+        # graphBuilder(g, lsts[1], lsts[0], net, 'GianComponents', 2)
+        lsts = aindaPensar(g)
+        graphBuilder(g, lsts[1], lsts[0], net, 'GiantComponents')
+        
+        lsts = aindaPensar(g, 2)
+        graphBuilder(g, lsts[1], lsts[0], net, 'TotalFlow', 2)
 
-    lsts = aindaPensar(g,3)
-    graphBuilder(g, lsts[1], lsts[0], net, 'Efficiency', 3)
+        lsts = aindaPensar(g,3)
+        graphBuilder(g, lsts[1], lsts[0], net, 'Efficiency', 3)
     
