@@ -1,13 +1,15 @@
-from graphBuilder import aindaPensar, graphBuilder
+from graphBuilder import aindaPensar, graphBuilder, outputFolderBuilder
 from igraph import *
 
 
-g = Graph.Read_GraphML('Other/terrestrial.GraphML')
+g = Graph.Read_GraphML('Other/fluvial.GraphML')
 lst = aindaPensar(g)
-graphBuilder(g, lst[1], lst[0], 'Fluvial', 'Terrestrial')
 
-#lst = aindaPensar(g,3)
-#graphBuilder(g, lst[1], lst[0], 'Fluvial-Total-Flow', 'Terrestrial')
+outputFolderBuilder('Terrestrial')
+graphBuilder(g, lst[1], lst[0], 'GiFluvial', 'Terrestrial')
 
-#lst = aindaPensar(g,2)
-#graphBuilder(g, lst[1], lst[0], 'Fluvial-Eff', 'Terrestrial')
+lst = aindaPensar(g,3)
+graphBuilder(g, lst[1], lst[0], 'FlTotal-Flow', 'Terrestrial')
+
+lst = aindaPensar(g,2)
+graphBuilder(g, lst[1], lst[0], 'FluEff', 'Terrestrial')

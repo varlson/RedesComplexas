@@ -35,6 +35,7 @@ def graphBuilder(g, removalTypes, metrics, network, folder, option=1):
 
 networks = ['pas2010', 'pas2005', 'pas2000', 'pas1995', 'pas1990', 'pas1985', 'pas1980', 'pas1975', 'pas1972']
 def _main():
+    outputFolderBuilder()
     for net in networks[:2]:
         g = main(net)
         # lsts = removalMethods_totalFlow(g)
@@ -48,3 +49,17 @@ def _main():
         lsts = aindaPensar(g,3)
         graphBuilder(g, lsts[1], lsts[0], net, 'Efficiency', 3)
     
+
+def outputFolderBuilder(fold=None):
+    from os import path, mkdir
+    from shutil import rmtree
+    if fold==None:
+        output = ['GiantComponents','TotalFlow','Efficiency']
+        for folder in output:
+            if path.exists('./GeneratedGraphs/'+folder):
+                rmtree('./GeneratedGraphs/'+folder)
+            mkdir('./GeneratedGraphs/'+folder)
+    else:
+        if path.exists('./GeneratedGraphs/'+fold):
+            rmtree('./GeneratedGraphs/'+fold)
+        mkdir('./GeneratedGraphs/'+fold)
