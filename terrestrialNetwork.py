@@ -2,7 +2,7 @@ from graphBuilder import aindaPensar, graphBuilder, outputFolderBuilder
 from igraph import *
 
 
-g = Graph.Read_GraphML('Other/fluvial.GraphML')
+g = Graph.Read_GraphML('Other/terrestrial.GraphML')
 lst = aindaPensar(g)
 
 outputFolderBuilder('Terrestrial')
