@@ -1,5 +1,7 @@
-from networkGenerator import *
+# from networkGenerator import *
+from igraph import *
 from random import random as rand
+import numpy as np
 
 #-------------------------- VULNERABILITY LIST GENERATOR ------------------------
 def effGlobal(g, weighted=False): # global efficiency calculator
@@ -113,17 +115,17 @@ def removal_methods_main(g):
     metricList.append(betweenness_removal_list)
     metricNameList.append("Betweenness")
 
-    #     # BETWEENNESS WITH WEIGHT
-    # _weight = np.array(g.es['weight'])
-    # _weight = np.array([1.0/x if x != 0.0 else 0 for x in _weight])
-    # betweenness_removal_list = removalFunction(g.copy(),g.betweenness(weights = _weight))
-    # metricList.append(betweenness_removal_list)
-    # metricNameList.append("Betweenness with Weights")
+        # BETWEENNESS WITH WEIGHT
+    _weight = np.array(g.es['weight'])
+    _weight = np.array([1.0/x if x != 0.0 else 0 for x in _weight])
+    betweenness_removal_list = removalFunction(g.copy(),g.betweenness(weights = _weight))
+    metricList.append(betweenness_removal_list)
+    metricNameList.append("Betweenness with Weights")
 
-    # # STRENGTH WEIGHT
-    # strength_removal_list = removalFunction(g.copy(),g.strength(weights = g.es['weight']))
-    # metricList.append(strength_removal_list)
-    # metricNameList.append("Strength")
+    # STRENGTH WEIGHT
+    strength_removal_list = removalFunction(g.copy(),g.strength(weights = g.es['weight']))
+    metricList.append(strength_removal_list)
+    metricNameList.append("Strength")
 
      # VULNERABILITY
     vulnerability_removal_list = removalFunction(g.copy(),calculator(g.copy()))

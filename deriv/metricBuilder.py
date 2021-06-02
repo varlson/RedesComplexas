@@ -44,7 +44,7 @@ def giantComponent(g, metric):
         count+=1
     return removaList
 
-def aindaPensar(g, type=1):
+def dinamicDriver(g, type=1):
     switcher = {
         1: giantComponent,
         2: efficiencyRemovalFuncion,
@@ -67,26 +67,26 @@ def aindaPensar(g, type=1):
     metricNameList.append("Betweenness")
 
         #BETWEENNESS WITH WEIGHT
-    # _weight = np.array(g.es['weight'])
-    # _weight = np.array([1.0/x if x != 0.0 else 0 for x in _weight])
-    # betweenness_removal_list = dinamicFunction(g.copy(),g.betweenness(weights = _weight),type)
-    # metricList.append(betweenness_removal_list)
-    # metricNameList.append("Betweenness with Weights")
+    _weight = np.array(g.es['weight'])
+    _weight = np.array([1.0/x if x != 0.0 else 0 for x in _weight])
+    betweenness_removal_list = dinamicFunction(g.copy(),g.betweenness(weights = _weight),type)
+    metricList.append(betweenness_removal_list)
+    metricNameList.append("Betweenness with Weights")
 
-    # # STRENGTH WEIGHT
-    # strength_removal_list = dinamicFunction(g.copy(),g.strength(weights = g.es['weight']), type)
-    # metricList.append(strength_removal_list)
-    # metricNameList.append("Strength")
+    # STRENGTH WEIGHT
+    strength_removal_list = dinamicFunction(g.copy(),g.strength(weights = g.es['weight']), type)
+    metricList.append(strength_removal_list)
+    metricNameList.append("Strength")
 
      # VULNERABILITY
     vulnerability_removal_list = dinamicFunction(g.copy(),calculator(g.copy()), type)
     metricList.append(vulnerability_removal_list)
     metricNameList.append("Vulnerability")
     
-    # # VULNERABILITY WITH WEIGHTS
-    # vulnerability_removal_list = dinamicFunction(g.copy(),calculator(g.copy(), True), type)
-    # metricList.append(vulnerability_removal_list)
-    # metricNameList.append("Vulnerability with Weights")
+    # VULNERABILITY WITH WEIGHTS
+    vulnerability_removal_list = dinamicFunction(g.copy(),calculator(g.copy(), True), type)
+    metricList.append(vulnerability_removal_list)
+    metricNameList.append("Vulnerability with Weights")
     
     # RANDOM REMOVAL
     random_removal_list = randomRemovalgenerator(g.copy(), 100)
