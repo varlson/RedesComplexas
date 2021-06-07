@@ -9,7 +9,7 @@ outputFolderBuilder('Terrestrial')
 graphBuilder(g, lst[1], lst[0], 'Giant Component', 'Terrestrial')
 
 lst = aindaPensar(g,3)
-graphBuilder(g, lst[1], lst[0], 'FlTotal-Flow', 'Terrestrial')
+graphBuilder(g, lst[1], lst[0], 'Total-Flow', 'Terrestrial')
 
 lst = aindaPensar(g,2)
-graphBuilder(g, lst[1], lst[0], 'FluEff', 'Terrestrial')
+graphBuilder(g, lst[1], lst[0], 'Efficiency', 'Terrestrial')
